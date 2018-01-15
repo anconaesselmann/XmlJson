@@ -1,0 +1,6 @@
+framework module Pods_XmlJson_Tests {
+  umbrella header "Pods-XmlJson_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
