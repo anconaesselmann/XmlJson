@@ -8,6 +8,11 @@ public struct XmlTransformation: Hashable {
     let key: String
     let map: ((Any) -> Any)
     
+    public init(key: String, map: @escaping (Any) -> Any) {
+        self.key = key
+        self.map = map
+    }
+    
     public var hashValue: Int { return key.hashValue }
     
     public static func ==(lhs: XmlTransformation, rhs: XmlTransformation) -> Bool {
