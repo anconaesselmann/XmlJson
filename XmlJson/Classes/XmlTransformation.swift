@@ -5,8 +5,8 @@
 import Foundation
 
 public struct XmlTransformation: Hashable {
-    let key: String
-    let map: ((Any) -> Any)
+    public let key: String
+    public let map: ((Any) -> Any)
     
     public var hashValue: Int { return key.hashValue }
     
