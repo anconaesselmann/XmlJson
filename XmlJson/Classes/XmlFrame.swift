@@ -4,12 +4,12 @@
 
 import Foundation
 
-struct XmlFrame {
-    let key: String
-    var data: Any
-    let mapping: XmlMapping?
+public struct XmlFrame {
+    public let key: String
+    public var data: Any
+    public let mapping: XmlMapping?
     
-    init(key: String, data: Any, mapping: XmlMapping? = nil) {
+    public init(key: String, data: Any, mapping: XmlMapping? = nil) {
         self.key = key
         self.data = data
         self.mapping = mapping
