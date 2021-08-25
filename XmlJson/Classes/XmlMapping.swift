@@ -8,13 +8,14 @@ public enum XmlMapping: Hashable {
     
     case holdsArray(key: String, elementNames: String)
     case isTextNode(key: String)
-    
-    public var hashValue: Int {
+
+    public func hash(into hasher: inout Hasher) {
         switch self {
         case .holdsArray(key: let key, elementNames: let elementNames):
-            return "\(key):\(elementNames)".hashValue
+            hasher.combine(key)
+            hasher.combine(elementNames)
         case .isTextNode(key: let key):
-            return key.hashValue
+            hasher.combine(key)
         }
     }
     

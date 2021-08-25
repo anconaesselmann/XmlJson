@@ -18,6 +18,13 @@ public class XmlJson: NSObject {
             else { return nil }
         return str
     }
+
+    public var data: Data? {
+        guard let jsonString = jsonString else {
+            return nil
+        }
+        return jsonString.data(using: .utf8)
+    }
     
     fileprivate var stack: [XmlFrame] = []
     

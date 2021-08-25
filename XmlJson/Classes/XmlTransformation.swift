@@ -12,8 +12,10 @@ public struct XmlTransformation: Hashable {
         self.key = key
         self.map = map
     }
-    
-    public var hashValue: Int { return key.hashValue }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+    }
     
     public static func ==(lhs: XmlTransformation, rhs: XmlTransformation) -> Bool {
         return lhs.key == rhs.key
