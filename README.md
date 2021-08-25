@@ -7,20 +7,30 @@
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example playground clone the repo, run pod install in the Example directory and open the Example.xcworkspace workspace. The Example playground contains all the examples from below.
 
+Import `XmlJson`:
 ```swift
 import XmlJson
 ```
 
-```swift
-let gpxFileContent = """
+For this example we are going to use the contents of a `GPX` file (an `XML` file standard for storing location data.)
+
+Let me quickly mention some of the strange aspects in regards to working with GPX files:
+
+`TrackPoint`s `<trkpt>`, which make up `TrackSegment`s `<trkseg>` store location data within a `GPX` file using a strange combination of `XML` `element`s and `attribute`s. `TrackPoint`s thmeselves are `element`s and the associated elevation `<ele>` and a timestamp `<time>` are child `element`s within a `TrackPoint`. The latitude `lat` and longitude `lat` are `attribute`s of the `TrackPoint`. A `GPX` file can have multiple `TrackSegment`s, which are grouped inside a `TrackElement`, though *not* inside their own `element` containing only `TrackSegment`s, but annoyingly *alongside with other elements*, like the track's `name` element...
+
+This makes for lot's of fun when it comes to representing `GPX` files as `JSON`.
+
+Below are the contents of a `GPX` file created from location data collected with an iPhone and stored in the `GPX` file format using [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx). We have one `Track` with two `TrackSegment`s with two `TrackPoint`s each:
+
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gpx
     xmlns="http://www.topografix.com/GPX/1/1" creator="SwiftGpx by Axel Ancona Esselmann" version="1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
     <trk>
-        <name>My Track</name>
+        <name>Peeler Lake - Noon Hike</name>
         <trkseg>
             <trkpt lat="38.123727" lon="-119.46705">
                 <ele>2899.8</ele>
@@ -46,22 +56,24 @@ let gpxFileContent = """
 """
 ```
 
+Let's start by defining two helper-functions that will aid us in interpreting our latitude, longitude and elevation values as `Double`s, and will ensure that we later have a way to turn our [ISO 8601 timestamp](https://en.wikipedia.org/wiki/ISO_8601) into a `Date`:
 ```swift
 let dateFormatter = DateFormatter()
 dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 
-let toDouble: (Any) -> Any = {
-    Double($0 as? String ?? "0") ?? 0
+func toDouble(_ any: Any) -> Any {
+    Double(any as? String ?? "0") ?? 0
 }
 
-let dateStringToDouble: (Any) -> Any = {
-    (dateFormatter.date(from: $0 as? String ?? "") ?? Date()).timeIntervalSince1970
+func dateStringToDouble(_ any: Any) -> Any {
+    (dateFormatter.date(from: any as? String ?? "") ?? Date()).timeIntervalSince1970
 }
 ```
 
+Now let us use the declarative nature of `XmlJson` to describe the structure of our underlying `XML` document:
 ```swift
 let xmlDict = XmlJson(
-    xmlString: gpxFileContent, // Also an initializer that takes data
+    xmlString: gpxFileContent,
     mappings: Set([
         .holdsArray(key: "trkseg", elementNames: "trkpt"),
         .holdsArray(key: "trk", elementNames: "trkseg"),
@@ -78,6 +90,11 @@ let xmlDict = XmlJson(
     ])
 )
 ```
+
+Let's go over what we just did. First of all, we passed in the contents of our file as a string. We could have also passed in a `Data` instance into the `XmlJson(xmlData:,mappings:,transformations:)` initializer.
+
+Let's have a closer look at the `mappings` `Set`:
+
 
 With `xmlDict.dictionary` you now have a representation of the GPX file in the format dictionary form: `[String: Any]`. If that is what you came here to do, awesome. For our example the resulting dictinary would look like this if converted to JSON (which `xmlDict.jsonString` will do for you)
 
