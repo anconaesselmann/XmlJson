@@ -34,12 +34,12 @@ let gpxFileContent = """
 let dateFormatter = DateFormatter()
 dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 
-let toDouble: (Any) -> Any = {
-    Double($0 as? String ?? "0") ?? 0
+func toDouble(_ any: Any) -> Any {
+    Double(any as? String ?? "0") ?? 0
 }
 
-let dateStringToDouble: (Any) -> Any = {
-    (dateFormatter.date(from: $0 as? String ?? "") ?? Date()).timeIntervalSince1970
+func dateStringToDouble(_ any: Any) -> Any {
+    (dateFormatter.date(from: any as? String ?? "") ?? Date()).timeIntervalSince1970
 }
 
 let xmlDict = XmlJson(
