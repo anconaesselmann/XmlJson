@@ -225,7 +225,7 @@ let encodedTrack = try encoder.encode(decoded.track)
 print(String(data: encodedTrack, encoding: .utf8)!)
 ```
 
-This library also supports converting a json dictionary to an XML document. If you are interested in doing that, have a look at the full implementation of [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx), which can turn turn arrays of `CLLocation` instances into GPX files and vise versa.
+This library also supports converting a json dictionary to an XML document. If you are interested in doing that, have a look at the full implementation of [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx) (in particular [here](https://github.com/anconaesselmann/SwiftGpx/blob/master/SwiftGpx/Classes/XML.swift)), which can turn turn arrays of `CLLocation` instances into GPX files and vise versa.
 
 
 ## Requirements
