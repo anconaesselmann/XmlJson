@@ -33,20 +33,20 @@ let gpxFileContent = """
 
 let xmlDict = XmlJson(
     xmlString: gpxFileContent, // Also an initializer that takes data
-    mappings: Set([
-        .holdsArray(key: "trkseg", elementNames: "trkpt"),
-        .holdsArray(key: "trk",  elementNames: "trkseg"),
-        .isTextNode(key: "ele"),
-        .isTextNode(key: "time"),
-        .isTextNode(key: "name")
-    ]),
+    mappings: [
+        .array("trkseg", element: "trkpt"),
+        .array("trk",  element: "trkseg"),
+        .textNode("ele"),
+        .textNode("time"),
+        .textNode("name")
+    ],
     // NOTE: Mappings HAVE to return a primitive type (String, Double, Int, Bool)
-    transformations: Set<XmlTransformation>([
+    transformations: [
         .double("ele"), // Transformation function returning a double
         .double("lon"),
         .double("lat"),
         .dateStringToUnixSeconds("time")
-    ])
+    ]
 )
 
 print("With xmlDict.dictionary you now have a representation of the GPX file in the format dictionary form: [String: Any]. If that is what you came here to do, awesome. For our example the resulting dictinary would look like this if converted to JSON (which xmlDict.jsonString will do for you):")

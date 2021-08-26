@@ -1,5 +1,5 @@
 PODS:
-  - XmlJson (1.0.0)
+  - XmlJson (1.0.1)
 
 DEPENDENCIES:
   - XmlJson (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  XmlJson: 89271e3dc9d0cf71c2ff98a2c71a33a23d8a9dde
+  XmlJson: 7d82bd5a1fc2a3ba87da49ecff55d285039eabee
 
 PODFILE CHECKSUM: ddc092e2b844bbf6c6ee587d93d5f202640c3419
 

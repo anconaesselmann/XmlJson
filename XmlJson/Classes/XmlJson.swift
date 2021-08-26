@@ -50,7 +50,7 @@ public class XmlJson: NSObject {
         self.transformations = transformations
         super.init()
         
-        let frame = XmlFrame(key: "trunk", data: [:])
+        let frame = XmlFrame("trunk", data: [:])
         stack.append(frame)
         let parser = XMLParser(data: xmlData)
         parser.delegate = self;
@@ -60,11 +60,11 @@ public class XmlJson: NSObject {
 
 extension XmlJson: XMLParserDelegate {
     
-    public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+    public func parser(_ parser: XMLParser, didStartElement element: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         let lastIndex = stack.count - 1
         let frame: XmlFrame
-        let arrayMapping = XmlMapping.holdsArray(key: stack[lastIndex].key, elementNames: elementName)
-        let textNodeMapping = XmlMapping.isTextNode(key: elementName)
+        let arrayMapping = XmlMapping.array(stack[lastIndex].key, element: element)
+        let textNodeMapping = XmlMapping.textNode(element)
         var mapped: [String:Any] = [:]
         for (key, value) in attributeDict {
             let mappdedValue: Any
@@ -77,11 +77,11 @@ extension XmlJson: XMLParserDelegate {
         }
         let data = !mapped.isEmpty ? mapped : [:]
         if mappings.contains(arrayMapping) {
-            frame = XmlFrame(key: elementName, data: data, mapping: arrayMapping)
+            frame = XmlFrame(element, data: data, mapping: arrayMapping)
         } else if mappings.contains(textNodeMapping) {
-            frame = XmlFrame(key: elementName, data: data, mapping: textNodeMapping)
+            frame = XmlFrame(element, data: data, mapping: textNodeMapping)
         } else {
-            frame = XmlFrame(key: elementName, data: data)
+            frame = XmlFrame(element, data: data)
         }
         stack.append(frame)
     }
@@ -91,25 +91,25 @@ extension XmlJson: XMLParserDelegate {
         guard let arrayMapping = stack[lastIndex].mapping else {
             return
         }
-        if case XmlMapping.isTextNode(key:_) = arrayMapping {
+        if case XmlMapping.textNode = arrayMapping {
             var text = stack[lastIndex].data as? String ?? ""
             text += string
             stack[lastIndex].data = text
         }
     }
     
-    public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    public func parser(_ parser: XMLParser, didEndElement element: String, namespaceURI: String?, qualifiedName qName: String?) {
         guard var frame = stack.popLast() else { return }
         let lastIndex = stack.count - 1
         
-        if let transformation = transformations.first(where: {$0.key == elementName}) {
+        if let transformation = transformations.first(where: {$0.key == element}) {
             frame.data = transformation.map(frame.data)
         }
         
         if let arrayMapping = frame.mapping {
             switch arrayMapping {
-            case .holdsArray(key:_, elementNames: let elementNames):
-                let arrayKey = "\(elementNames)_elements"
+            case .array(_, element: let element):
+                let arrayKey = "\(element)_elements"
                 if var dict = stack[lastIndex].data as? [String: Any] {
                     var array: [Any] = dict[arrayKey] as? [Any] ?? []
                     array.append(frame.data)

@@ -11,7 +11,7 @@ public struct XmlTransformation: Hashable {
     let key: String
     let map: Mapping
     
-    public init(key: String, map: @escaping Mapping) {
+    public init(_ key: String, map: @escaping Mapping) {
         self.key = key
         self.map = map
     }
@@ -25,23 +25,23 @@ public struct XmlTransformation: Hashable {
     }
 
     public static func double(_ key: String) -> Self {
-        .init(key: key) { Double($0 as? String ?? "0") ?? 0 }
+        .init(key) { Double($0 as? String ?? "0") ?? 0 }
     }
 
     public static func int(_ key: String) -> Self {
-        .init(key: key) { Int($0 as? String ?? "0") ?? 0 }
+        .init(key) { Int($0 as? String ?? "0") ?? 0 }
     }
 
     public static func bool(_ key: String) -> Self {
-        .init(key: key) { Bool(($0 as? String)?.lowercased() ?? "false") ?? false }
+        .init(key) { Bool(($0 as? String)?.lowercased() ?? "false") ?? false }
     }
 
     public static func dateStringToUnixSeconds(_ key: String, format: String = "yyyy-MM-dd'T'HH:mm:ssZ") -> Self {
-        .init(key: key) { (date(from: $0 as? String ?? "", format: format) ?? Date()).timeIntervalSince1970 }
+        .init(key) { (date(from: $0 as? String ?? "", format: format) ?? Date()).timeIntervalSince1970 }
     }
 
     public static func transfrom(_ key: String, using mapping: @escaping Mapping) -> Self {
-        .init(key: key, map: mapping)
+        .init(key, map: mapping)
     }
 
     private static let dateFormatter = DateFormatter()

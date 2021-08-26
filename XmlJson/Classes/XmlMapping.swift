@@ -6,26 +6,26 @@ import Foundation
 
 public enum XmlMapping: Hashable {
     
-    case holdsArray(key: String, elementNames: String)
-    case isTextNode(key: String)
+    case array(String, element: String)
+    case textNode(String)
 
     public func hash(into hasher: inout Hasher) {
         switch self {
-        case .holdsArray(key: let key, elementNames: let elementNames):
+        case .array(let key, element: let element):
             hasher.combine(key)
-            hasher.combine(elementNames)
-        case .isTextNode(key: let key):
+            hasher.combine(element)
+        case .textNode(let key):
             hasher.combine(key)
         }
     }
     
     public static func ==(lhs: XmlMapping, rhs: XmlMapping) -> Bool {
         switch (lhs, rhs) {
-        case (.holdsArray(key: let keyLhs, elementNames: let elementNamesLhs),
-              .holdsArray(key: let keyRhs, elementNames: let elementNamesRhs)
-            ): return keyLhs == keyRhs && elementNamesLhs == elementNamesRhs
-        case (.isTextNode(key: let keyLhs),
-              .isTextNode(key: let keyRhs)
+        case (.array(let keyLhs, element: let elementLhs),
+              .array(let keyRhs, element: let elementRhs)
+            ): return keyLhs == keyRhs && elementLhs == elementRhs
+        case (.textNode(let keyLhs),
+              .textNode(let keyRhs)
             ): return keyLhs == keyRhs
         default: return false
         }
