@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'XmlJson'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'XmlJson is a simple declarative library for reading and writing XML'
 
   s.description      = <<-DESC

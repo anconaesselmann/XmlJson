@@ -31,32 +31,21 @@ let gpxFileContent = """
 </gpx>
 """
 
-let dateFormatter = DateFormatter()
-dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-
-func toDouble(_ any: Any) -> Any {
-    Double(any as? String ?? "0") ?? 0
-}
-
-func dateStringToDouble(_ any: Any) -> Any {
-    (dateFormatter.date(from: any as? String ?? "") ?? Date()).timeIntervalSince1970
-}
-
 let xmlDict = XmlJson(
     xmlString: gpxFileContent, // Also an initializer that takes data
     mappings: Set([
         .holdsArray(key: "trkseg", elementNames: "trkpt"),
-        .holdsArray(key: "trk", elementNames: "trkseg"),
+        .holdsArray(key: "trk",  elementNames: "trkseg"),
         .isTextNode(key: "ele"),
         .isTextNode(key: "time"),
         .isTextNode(key: "name")
     ]),
     // NOTE: Mappings HAVE to return a primitive type (String, Double, Int, Bool)
     transformations: Set<XmlTransformation>([
-        XmlTransformation(key: "ele", map: toDouble),
-        XmlTransformation(key: "lon", map: toDouble),
-        XmlTransformation(key: "lat", map: toDouble),
-        XmlTransformation(key: "time", map: dateStringToDouble)
+        .double("ele"), // Transformation function returning a double
+        .double("lon"),
+        .double("lat"),
+        .dateStringToUnixSeconds("time")
     ])
 )
 
@@ -198,3 +187,4 @@ print(String(data: encodedTrack, encoding: .utf8)!)
 
 
 print("This library also supports going from a dictionary to an XML document. If you are interested in doing that, have a look at the full implementation of SwiftGPX, which can turn turn arrays of CLLocation instances into GPX files and vise versa.")
+
