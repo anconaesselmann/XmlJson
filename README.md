@@ -53,7 +53,6 @@ Below are the contents of a `GPX` file created from location data collected with
         </trkseg>
     </trk>
 </gpx>
-"""
 ```
 
 Let's start by defining two helper-functions that will aid us in interpreting our latitude, longitude and elevation values as `Double`s, and will ensure that we later have a way to turn our [ISO 8601 timestamp](https://en.wikipedia.org/wiki/ISO_8601) into a `Date`:
