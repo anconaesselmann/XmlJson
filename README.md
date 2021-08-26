@@ -59,20 +59,20 @@ Now let us use the declarative nature of `XmlJson` to describe the structure of 
 ```swift
 let xmlDict = XmlJson(
     xmlString: gpxFileContent,
-    mappings: Set([
-        .holdsArray(key: "trkseg", elementNames: "trkpt"),
-        .holdsArray(key: "trk", elementNames: "trkseg"),
-        .isTextNode(key: "ele"),
-        .isTextNode(key: "time"),
-        .isTextNode(key: "name")
-    ]),
+    mappings: [
+        .holdsArray("trkseg", elementNames: "trkpt"),
+        .holdsArray("trk",  elementNames: "trkseg"),
+        .isTextNode("ele"),
+        .isTextNode("time"),
+        .isTextNode("name")
+    ],
     // NOTE: Mappings HAVE to return a primitive type (String, Double, Int, Bool)
-    transformations: Set<XmlTransformation>([
+    transformations: [
         .double("ele"),
         .double("lon"),
         .double("lat"),
         .dateStringToUnixSeconds("time")
-    ])
+    ]
 )
 ```
 
