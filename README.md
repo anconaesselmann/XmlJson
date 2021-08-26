@@ -55,20 +55,6 @@ Below are the contents of a `GPX` file created from location data collected with
 </gpx>
 ```
 
-Let's start by defining two helper-functions that will aid us in interpreting our latitude, longitude and elevation values as `Double`s, and will ensure that we later have a way to turn our [ISO 8601 timestamp](https://en.wikipedia.org/wiki/ISO_8601) into a `Date`:
-```swift
-let dateFormatter = DateFormatter()
-dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-
-func toDouble(_ any: Any) -> Any {
-    Double(any as? String ?? "0") ?? 0
-}
-
-func dateStringToDouble(_ any: Any) -> Any {
-    (dateFormatter.date(from: any as? String ?? "") ?? Date()).timeIntervalSince1970
-}
-```
-
 Now let us use the declarative nature of `XmlJson` to describe the structure of our underlying `XML` document:
 ```swift
 let xmlDict = XmlJson(
@@ -82,10 +68,10 @@ let xmlDict = XmlJson(
     ]),
     // NOTE: Mappings HAVE to return a primitive type (String, Double, Int, Bool)
     transformations: Set<XmlTransformation>([
-        XmlTransformation(key: "ele", map: toDouble),
-        XmlTransformation(key: "lon", map: toDouble),
-        XmlTransformation(key: "lat", map: toDouble),
-        XmlTransformation(key: "time", map: dateStringToDouble)
+        .double("ele"),
+        .double("lon"),
+        .double("lat"),
+        .dateStringToUnixSeconds("time")
     ])
 )
 ```
@@ -172,11 +158,11 @@ Now that we know how `XmlJson` takes a `XML` document and parses it into `JSON`,
 
 ```swift
 Set<XmlTransformation>([
-    XmlTransformation(key: "ele", map: toDouble),
-    XmlTransformation(key: "lon", map: toDouble),
-    XmlTransformation(key: "lat", map: toDouble),
-    XmlTransformation(key: "time", map: dateStringToDouble)
-]
+    .double("ele"),
+    .double("lon"),
+    .double("lat"),
+    .dateStringToUnixSeconds("time")
+])
 ```
 The `XmlTransformation` object allows us to do whatever we would like with whatever was inside a text node or stored as an attribute key-value pair (as long as we return a primitive type (`String`, `Double`, `Int`, `Bool`.) More on that later. For the `lon`, `lat` attribute values and the `ele` text node contents we pass in our `toDouble` mapping function. All it does is turn a parsed `String` into a `Double` for us.
 
