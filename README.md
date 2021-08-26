@@ -222,11 +222,10 @@ struct Document: Codable {
 Note that we created a computed `var date: Date` property that lets us work with the location's timestamp as a `Date` instance and not the `Double` we turned it into.
 
 
-For decoding we need the parsed document in `Data` form (let's just all agree to ignore the `!`...):
+For decoding we don't need a [String: Any] but instead an instance of `Data` (handling of optionals ommited for clarity):
 ```swift
-let data = xmlDict!.data!
+let data = xmlDict.data
 
-print("And here we are doing vanilla JSONDecoder stuff to instantiate our Document:")
 let decoder = JSONDecoder()
 decoder.keyDecodingStrategy = .convertFromSnakeCase
 decoder.dateDecodingStrategy = .secondsSince1970
@@ -234,8 +233,7 @@ decoder.dateDecodingStrategy = .secondsSince1970
 let decoded = try decoder.decode(Document.self, from: data)
 ```
 
-
-So far we haven't really had a lot of controll for the organization of our object. We could have written a custom Decodable implementation for whatever final shape we want our GPX representation to take. Above I chose to create an intermediate Codable Document struct and now I will be doing the conversion to my final Track struct:
+Depending on what your needs are you might be done at this point. As mentioned above I would like to continue working with a neat `Track` struck from here on out:
 
 ```swift
 struct Track: Codable {
@@ -256,7 +254,10 @@ struct Track: Codable {
         }
     }
 }
+```
 
+A little extension for our Document to convert it into a Track instance:
+```swift
 extension Document {
     var track: Track {
         Track(
@@ -269,7 +270,7 @@ extension Document {
 }
 ```
 
-And here we have it:
+And here we have it, messy XML to a clean (and now fully `Codable`) `Swift` type:
 
 ```swift
 let track: Track = decoded.track
@@ -285,10 +286,48 @@ let encodedTrack = try encoder.encode(decoded.track)
 print(String(data: encodedTrack, encoding: .utf8)!)
 ```
 
-This library also supports converting a json dictionary to an XML document. If you are interested in doing that, have a look at the full implementation of [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx) (in particular [here](https://github.com/anconaesselmann/SwiftGpx/blob/master/SwiftGpx/Classes/XML.swift)), which can turn turn arrays of `CLLocation` instances into GPX files and vise versa.
+which will look like this:
+```json
+{
+  "name" : "My Track",
+  "segments" : [
+    [
+      {
+        "lat" : 38.123727000000002,
+        "timestamp" : "2021-06-03T20:25:26Z",
+        "lon" : -119.46705,
+        "ele" : 2899.8000000000002
+      },
+      {
+        "lat" : 38.123733000000001,
+        "timestamp" : "2021-06-03T20:25:27Z",
+        "lon" : -119.467049,
+        "ele" : 2899.8000000000002
+      }
+    ],
+    [
+      {
+        "lat" : 38.123736000000001,
+        "timestamp" : "2021-06-03T20:25:29Z",
+        "lon" : -119.46705,
+        "ele" : 2899.8000000000002
+      },
+      {
+        "lat" : 38.123736000000001,
+        "timestamp" : "2021-06-03T20:25:30Z",
+        "lon" : -119.46705,
+        "ele" : 2899.8000000000002
+      }
+    ]
+  ]
+}
+```
 
+Where to go from here:
 
-## Requirements
+[XmlJson](https://github.com/anconaesselmann/XmlJson) also supports converting a `JSON` dictionary to an `XML` document. If you are interested in doing that, have a look at the full implementation of [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx) (in particular [the XML handling](https://github.com/anconaesselmann/SwiftGpx/blob/master/SwiftGpx/Classes/XML.swift)), which can turn arrays of `CLLocation` instances into GPX files and vise versa. I might write that up eventually, but I think you have the tools now.
+
+Also, if you are working with `CoreLocation` you probably don't want a custom `Location` struct but instead convert straight to a `CLLocation`. For any of those needs either use [SwiftGPX](https://github.com/anconaesselmann/SwiftGpx) or implement it yourself.
 
 ## Installation
 
