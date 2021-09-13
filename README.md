@@ -7,6 +7,8 @@
 
 **XmlJson is a declarative library for parsing `XML` documents.** By describing the structure of the underlying information we are spared tedious and error-prone conditional logic in decoding and encoding `XML` documents.
 
+XmlJson powers [GPX File Editor](https://apps.apple.com/us/app/gpx-file-editor/id1583908804), which is available for iPhone in the App Store.
+
 To run the `Example` playground that contains the code from the workings-out below clone the repo, run `pod install` in the `Example` directory and open the `Example.xcworkspace`. The `Example` playground contains all the examples from below.
 
 To get started, import `XmlJson`:
