@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'XmlJson'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'XmlJson is a simple declarative library for reading and writing XML'
 
   s.description      = <<-DESC
@@ -13,5 +13,5 @@ XmlJson is a simple declarative library for reading and writing XML.
   s.source           = { :git => 'https://github.com/anconaesselmann/XmlJson.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
-  s.source_files = 'XmlJson/Classes/**/*'
+  s.source_files = 'Sources/XmlJson/**/*'
 end

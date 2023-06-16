@@ -19,6 +19,14 @@ public class XmlJson: NSObject {
         return str
     }
 
+    public func prettyPrint() {
+        guard let jsonString = jsonString else {
+            print("")
+            return
+        }
+        print(NSString(string: jsonString))
+    }
+
     public var data: Data? {
         guard let jsonString = jsonString else {
             return nil
